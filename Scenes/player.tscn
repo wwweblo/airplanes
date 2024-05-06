@@ -1,0 +1,66 @@
+[gd_scene load_steps=7 format=3 uid="uid://djbyq5672k6at"]
+
+[ext_resource type="Script" path="res://Scenes/player.gd" id="1_g7yas"]
+[ext_resource type="Texture2D" uid="uid://bc167m8gjx2eu" path="res://Assets/Sprites/main-plane.png" id="2_fsj1j"]
+[ext_resource type="PackedScene" uid="uid://dnclryawfckj6" path="res://Scenes/hurtbox.tscn" id="4_g3sf4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n4yok"]
+size = Vector2(10, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jcnkx"]
+size = Vector2(11.8896, 22.0182)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0kijf"]
+radius = 320.127
+
+[node name="Player" type="CharacterBody2D" groups=["attack", "player"]]
+motion_mode = 1
+script = ExtResource("1_g7yas")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_fsj1j")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_smoothed = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_n4yok")
+
+[node name="hurtbox" parent="." instance=ExtResource("4_g3sf4")]
+scale = Vector2(0.989766, 1.04801)
+collision_layer = 2
+collision_mask = 2
+HurtBoxType = 2
+
+[node name="CollisionShape2D" parent="hurtbox" index="0"]
+position = Vector2(6.02209e-08, 0.477095)
+scale = Vector2(1.01972, 1.08341)
+shape = SubResource("RectangleShape2D_jcnkx")
+
+[node name="EnemyDetectionArea" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea"]
+shape = SubResource("CircleShape2D_0kijf")
+
+[node name="Attack" type="Node2D" parent="."]
+
+[node name="ForkTimer" type="Timer" parent="Attack"]
+unique_name_in_owner = true
+
+[node name="ForkAttackTimer" type="Timer" parent="Attack/ForkTimer"]
+unique_name_in_owner = true
+wait_time = 0.075
+
+[connection signal="hurt" from="hurtbox" to="." method="_on_hurtbox_hurt"]
+[connection signal="area_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_area_entered"]
+[connection signal="area_exited" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_area_exited"]
+[connection signal="body_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_entered"]
+[connection signal="body_exited" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_exited"]
+[connection signal="timeout" from="Attack/ForkTimer" to="." method="_on_fork_timer_timeout"]
+[connection signal="timeout" from="Attack/ForkTimer/ForkAttackTimer" to="." method="_on_fork_attack_timer_timeout"]
+
+[editable path="hurtbox"]

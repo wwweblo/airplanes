@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://brr2gyuo066nv"]
+
+[ext_resource type="Script" path="res://Scenes/fork.gd" id="1_wbn53"]
+[ext_resource type="Texture2D" uid="uid://0avxju55v4gw" path="res://Assets/Sprites/weapons/fork.png" id="2_7tj44"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vhh6t"]
+size = Vector2(12, 32)
+
+[node name="Fork" type="Area2D" groups=["attack"]]
+show_behind_parent = true
+top_level = true
+light_mask = 2
+visibility_layer = 2
+texture_filter = 1
+script = ExtResource("1_wbn53")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_7tj44")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+light_mask = 4
+visibility_layer = 4
+shape = SubResource("RectangleShape2D_vhh6t")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+
+[node name="snd_play" type="AudioStreamPlayer" parent="."]
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
